@@ -9,7 +9,8 @@ class LoginForm extends Component {
     email: '',
     password: '',
     error: '',
-    loading: false
+    loading: false,
+    ref: this.LoginForm
   };
 
   onButtonPress = async () => {
@@ -26,8 +27,10 @@ class LoginForm extends Component {
         this.setState({ error: 'Authentication Failed' });
       }
     } finally {
-      this.setState({ loading: false });
-      this.setState({ email: '', password: '' });
+      if (this.state.ref) {
+        this.setState({ loading: false });
+        this.setState({ email: '', password: '' });
+      }
     }
   };
 
@@ -88,3 +91,17 @@ const styles = {
 }
 
 export default LoginForm;
+
+
+// Explanation of this code
+//
+//      if (this.state.ref) {
+//        this.setState({ loading: false });
+//        this.setState({ email: '', password: '' });
+//      }
+
+// So.. what happens here is if these setState calls happen, since they are done immediately after the async process of user authentication...
+// if I don't put them in this if block I get a warning from React about updating the state on a component that is not mounted.
+// Since anytime the auth status changes over in App.js it triggers a re-render and loads the logout button instead of LoginForm.
+// By the time it gets to this code the LoginForm has unmounted, thus no longer exists.
+// This if block will make sure the component exists before setting the state.

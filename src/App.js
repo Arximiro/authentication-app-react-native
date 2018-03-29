@@ -66,6 +66,7 @@ class App extends Component {
 
 styles = {
   button: {
+    padding: 5,
     flexDirection: 'row'
   },
   spinner: {    
